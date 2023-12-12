@@ -21,3 +21,7 @@ Description: Contains the core survival analysis routines, including
 	     and parametric accelerated failure time models.
 License: LGPL (>=2)
 URL: https://github.com/therneau/survival
+Suggests: 
+    knitr,
+    rmarkdown
+VignetteBuilder: knitr
