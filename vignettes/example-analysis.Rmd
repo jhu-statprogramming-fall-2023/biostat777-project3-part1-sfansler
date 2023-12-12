@@ -37,8 +37,8 @@ save_data <- function(){
   data_path <- file.path("data", "tuesdata.rds")
   
   if(!file.exists(data_path)){
-    data <- readr::read_csv("https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2019/2019-10-08/ipf_lifts.csv")
-    write.table(data, data_path)
+    data <- tidytuesdayR::tt_load('2019-10-08')
+    saveRDS(data, data_path)
   }
 }
 
@@ -46,11 +46,11 @@ load_data <- function(){
   create_dir()
   save_data()
   data_path <- file.path("data", "tuesdata.rds")
-  data <- read.table(data_path)
+  data <- readRDS(data_path)
   return(data)
 }
 
-ipf_lifts = load_data()
+ipf_lifts = load_data()[[1]]
 ```
 
 The dataset I chose to use from TidyTuesday is the powerlifting dataset from 2019. The dataset includes information about powerlifters at specific competitions. It includes the competitor's name, sex, age, age class, event, equipment used, date of competition, bodyweight in kg, and the best of three lifts in each of the events (squat, bench press, and deadlift) in kg.
@@ -91,6 +91,15 @@ ipf_lifts_event = ipf_lifts_lbs %>%
 
 table(ipf_lifts_event$elite)
 
+#Now creating a "time" variable that measures the number of days since the first recorded competition for each player
+ipf_lifts_time = ipf_lifts_event %>%
+  group_by(name) %>%
+  mutate(time = as.numeric(date)-min(as.numeric(date)))
+
+ipf_lifts_time %>%
+  group_by(name) %>%
+  summarize(max(time))
+
 ggplot(data = ipf_lifts_time, aes(x = equipment, y = squat_lb)) + geom_violin() + labs(y = "Best squat (lbs)", title = "Violin plots of competitors' squat performances", subtitle = "In pounds, by equipment used", caption = "Violin plot of competitors' best squat lift in three tries. Separated by equipment type.")
 
 ggplot(data = ipf_lifts_time, aes(x = bench_lb, group = equipment, fill = equipment)) + geom_boxplot() + labs(x = "Best bench (lbs)", title = "Boxplots of competitors' bench performances", subtitle = "In pounds, by equipment used", caption = "Boxplots of competitors' best bench lift in three tries. Separated by equipment type.")
@@ -107,19 +116,12 @@ every(ipf_lifts_time$elite, is.na)
 #So some of the events are NA, but not all of them.
 
 
-#Now creating a "time" variable that measures the number of days since the first recorded competition for each player
-ipf_lifts_time = ipf_lifts_event %>%
-  group_by(name) %>%
-  mutate(time = as.numeric(date)-min(as.numeric(date)))
 
-ipf_lifts_time %>%
-  group_by(name) %>%
-  summarize(max(time))
 
 ggsurvfit(survfit(Surv(time, elite) ~ 1, data = ipf_lifts_time))
 
 #using age class
-fct_relevel(ipf_lifts_time$age_class, "18-19", after = 2)
+head(fct_relevel(ipf_lifts_time$age_class, "18-19", after = 2))
 
 summary(coxph(Surv(time, elite) ~ age_class + bodyweight_lb, data = ipf_lifts_time))
 
