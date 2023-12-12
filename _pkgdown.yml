@@ -1,0 +1,17 @@
+url: ~
+template:
+  bootstrap: 5
+  bslib:
+    bg: "#000000"
+    fg: "#898989"
+    primary: "#89AA10"
+
+navbar:
+  structure:
+    left: [intro, reference]
+    right: [search, github]
+    
+    
+home:
+  sidebar:
+    structure: [links, license, citation]
