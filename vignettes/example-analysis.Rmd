@@ -14,7 +14,7 @@ knitr::opts_chunk$set(
 )
 ```
 
-#Load the survival package and other necessary packages for analysis
+# Load the survival package and other necessary packages for analysis
 ```{r setup}
 library(survival)
 library(ggsurvfit)

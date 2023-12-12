@@ -172,7 +172,7 @@ survConcordance.fit: These functions are temporarily retained for compatability 
 
 survfitcoxph.fit: This program is mainly supplied to allow other packages to invoke the survfit.coxph function at a ‘data’ level rather than a ‘user’ level. It does no checks on the input data that is provided, which can lead to unexpected errors if that data is wrong.
 
-#Basic example
+# Basic example
 ```{r}
 library(survival)
 
